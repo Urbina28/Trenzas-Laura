@@ -3,88 +3,109 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Barber Pro Manager</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <title>Urbina Cash Manager</title>
     <style>
-        :root { --gold: #c5a059; --dark: #121212; --gray: #1e1e1e; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--dark); color: white; padding: 20px; }
-        .card { background: var(--gray); padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); margin-bottom: 20px; }
-        h1 { color: var(--gold); text-align: center; border-bottom: 2px solid var(--gold); padding-bottom: 10px; }
-        label { display: block; margin-top: 10px; color: var(--gold); font-weight: bold; }
-        input, select { width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; border: 1px solid #333; background: #2a2a2a; color: white; box-sizing: border-box; }
-        .btn { background: var(--gold); color: black; border: none; padding: 15px; width: 100%; border-radius: 10px; font-weight: bold; cursor: pointer; margin-top: 10px; }
-        .btn-whatsapp { background: #25d366; color: white; margin-top: 5px; }
+        :root { --gold: #ffd700; --dark: #000; --neon: #00fbff; }
+        body {
+            background: var(--dark);
+            color: white;
+            font-family: 'Arial Black', sans-serif;
+            text-align: center;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 100vh;
+        }
+        .header { font-size: 12px; color: var(--gold); letter-spacing: 2px; margin-bottom: 20px; }
+        
+        /* Botón Gigante */
+        .touch-area {
+            width: 250px;
+            height: 250px;
+            background: linear-gradient(145deg, #1a1a1a, #000);
+            border: 5px solid var(--gold);
+            border-radius: 50%;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
+            cursor: pointer;
+            transition: 0.1s;
+        }
+        .touch-area:active { transform: scale(0.95); box-shadow: 0 0 10px var(--gold); }
+        .touch-area span { font-size: 80px; }
+
+        /* Resultados */
+        .stats { margin-top: 40px; border-top: 1px solid #333; padding-top: 20px; }
+        .stat-box { font-size: 1.2rem; margin: 10px 0; }
+        .money { color: var(--neon); font-size: 2.5rem; text-shadow: 0 0 10px var(--neon); }
+        .count { color: var(--gold); font-size: 1.5rem; }
+
+        .btn-reset {
+            background: #ff0055;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin-top: 20px;
+            border-radius: 5px;
+            font-size: 12px;
+            opacity: 0.5;
+        }
     </style>
 </head>
 <body>
 
-    <h1>💈 BARBER PRO PANEL</h1>
+    <div class="header">GAEL URBINA - BARBER CONTROL</div>
 
-    <div class="card">
-        <h3>Nueva Cita / Ticket</h3>
-        
-        <label>Nombre del Cliente:</label>
-        <input type="text" id="cliente" placeholder="Ej. Juan Pérez">
-
-        <label>WhatsApp (con código de país):</label>
-        <input type="text" id="tel" placeholder="Ej. 5219998887766">
-
-        <label>Tipo de Corte / Servicio:</label>
-        <select id="servicio" onchange="actualizarPrecio()">
-            <option value="0" disabled selected>Selecciona un servicio</option>
-            <option value="150">Corte Clásico - $150</option>
-            <option value="200">Corte + Barba - $200</option>
-            <option value="100">Solo Barba - $100</option>
-            <option value="300">Servicio VIP (Corte, Barba, Exfoliación) - $300</option>
-        </select>
-
-        <label>Precio Total ($):</label>
-        <input type="number" id="precio" readonly>
-
-        <button class="btn" onclick="generarTicket()">Generar Ticket PDF</button>
-        <button class="btn btn-whatsapp" onclick="enviarWhatsApp()">Enviar por WhatsApp</button>
+    <div class="touch-area" onclick="preguntarCorte()">
+        <span>💈</span>
     </div>
 
+    <div class="stats">
+        <div class="stat-box">CORTES HOY: <span id="contador" class="count">0</span></div>
+        <div class="stat-box">GANANCIA TOTAL:</div>
+        <div id="dinero" class="money">$0</div>
+    </div>
+
+    <button class="btn-reset" onclick="resetear()">RESETEAR DÍA</button>
+
     <script>
-        const { jsPDF } = window.jspdf;
+        // Cargamos los datos guardados si existen
+        let cortes = parseInt(localStorage.getItem('cortes_gael')) || 0;
+        const PRECIO_CORTE = 120;
 
-        function actualizarPrecio() {
-            const select = document.getElementById('servicio');
-            document.getElementById('precio').value = select.value;
-        }
-
-        function generarTicket() {
-            const doc = new jsPDF();
-            const cliente = document.getElementById('cliente').value;
-            const precio = document.getElementById('precio').value;
-            const servicio = document.getElementById('servicio').options[document.getElementById('servicio').selectedIndex].text;
-
-            if(!cliente || precio == 0) return alert("Llena todos los campos");
-
-            // Diseño del PDF
-            doc.setFontSize(22);
-            doc.text("TICKET DE BARBERÍA", 105, 20, { align: "center" });
-            doc.setFontSize(14);
-            doc.text(`Cliente: ${cliente}`, 20, 40);
-            doc.text(`Servicio: ${servicio}`, 20, 50);
-            doc.text(`Total pagado: $${precio}`, 20, 60);
-            doc.text("¡Gracias por su preferencia!", 105, 80, { align: "center" });
-
-            doc.save(`Ticket_${cliente}.pdf`);
-        }
-
-        function enviarWhatsApp() {
-            const cliente = document.getElementById('cliente').value;
-            const tel = document.getElementById('tel').value;
-            const precio = document.getElementById('precio').value;
+        // Función para mostrar los datos en pantalla
+        function actualizarPantalla() {
+            document.getElementById('contador').innerText = cortes;
+            document.getElementById('dinero').innerText = "$" + (cortes * PRECIO_CORTE);
             
-            if(!tel) return alert("Pon el número de WhatsApp");
-
-            const mensaje = `¡Hola ${cliente}! Tu cita ha sido agendada. Total: $${precio}. Te esperamos en la Barbería. 💈`;
-            const url = `https://wa.me/${tel}?text=${encodeURIComponent(mensaje)}`;
-            
-            window.open(url, '_blank');
+            // Guardamos en la memoria del celular para que no se borre al cerrar
+            localStorage.setItem('cortes_gael', cortes);
         }
+
+        function preguntarCorte() {
+            // Confirmación de seguridad
+            let confirmar = confirm("¿Acabas de terminar un corte de $120?");
+            
+            if (confirmar) {
+                cortes++;
+                actualizarPantalla();
+                // Vibración pequeña
+                if (navigator.vibrate) navigator.vibrate(100);
+            }
+        }
+
+        function resetear() {
+            if (confirm("¿Seguro que quieres borrar las ganancias de hoy?")) {
+                cortes = 0;
+                actualizarPantalla();
+            }
+        }
+
+        // Mostrar datos al abrir la app
+        actualizarPantalla();
     </script>
 </body>
 </html>
