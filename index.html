@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Barber Pro Manager</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        :root { --gold: #c5a059; --dark: #121212; --gray: #1e1e1e; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--dark); color: white; padding: 20px; }
+        .card { background: var(--gray); padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); margin-bottom: 20px; }
+        h1 { color: var(--gold); text-align: center; border-bottom: 2px solid var(--gold); padding-bottom: 10px; }
+        label { display: block; margin-top: 10px; color: var(--gold); font-weight: bold; }
+        input, select { width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; border: 1px solid #333; background: #2a2a2a; color: white; box-sizing: border-box; }
+        .btn { background: var(--gold); color: black; border: none; padding: 15px; width: 100%; border-radius: 10px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .btn-whatsapp { background: #25d366; color: white; margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+    <h1>💈 BARBER PRO PANEL</h1>
+
+    <div class="card">
+        <h3>Nueva Cita / Ticket</h3>
+        
+        <label>Nombre del Cliente:</label>
+        <input type="text" id="cliente" placeholder="Ej. Juan Pérez">
+
+        <label>WhatsApp (con código de país):</label>
+        <input type="text" id="tel" placeholder="Ej. 5219998887766">
+
+        <label>Tipo de Corte / Servicio:</label>
+        <select id="servicio" onchange="actualizarPrecio()">
+            <option value="0" disabled selected>Selecciona un servicio</option>
+            <option value="150">Corte Clásico - $150</option>
+            <option value="200">Corte + Barba - $200</option>
+            <option value="100">Solo Barba - $100</option>
+            <option value="300">Servicio VIP (Corte, Barba, Exfoliación) - $300</option>
+        </select>
+
+        <label>Precio Total ($):</label>
+        <input type="number" id="precio" readonly>
+
+        <button class="btn" onclick="generarTicket()">Generar Ticket PDF</button>
+        <button class="btn btn-whatsapp" onclick="enviarWhatsApp()">Enviar por WhatsApp</button>
+    </div>
+
+    <script>
+        const { jsPDF } = window.jspdf;
+
+        function actualizarPrecio() {
+            const select = document.getElementById('servicio');
+            document.getElementById('precio').value = select.value;
+        }
+
+        function generarTicket() {
+            const doc = new jsPDF();
+            const cliente = document.getElementById('cliente').value;
+            const precio = document.getElementById('precio').value;
+            const servicio = document.getElementById('servicio').options[document.getElementById('servicio').selectedIndex].text;
+
+            if(!cliente || precio == 0) return alert("Llena todos los campos");
+
+            // Diseño del PDF
+            doc.setFontSize(22);
+            doc.text("TICKET DE BARBERÍA", 105, 20, { align: "center" });
+            doc.setFontSize(14);
+            doc.text(`Cliente: ${cliente}`, 20, 40);
+            doc.text(`Servicio: ${servicio}`, 20, 50);
+            doc.text(`Total pagado: $${precio}`, 20, 60);
+            doc.text("¡Gracias por su preferencia!", 105, 80, { align: "center" });
+
+            doc.save(`Ticket_${cliente}.pdf`);
+        }
+
+        function enviarWhatsApp() {
+            const cliente = document.getElementById('cliente').value;
+            const tel = document.getElementById('tel').value;
+            const precio = document.getElementById('precio').value;
+            
+            if(!tel) return alert("Pon el número de WhatsApp");
+
+            const mensaje = `¡Hola ${cliente}! Tu cita ha sido agendada. Total: $${precio}. Te esperamos en la Barbería. 💈`;
+            const url = `https://wa.me/${tel}?text=${encodeURIComponent(mensaje)}`;
+            
+            window.open(url, '_blank');
+        }
+    </script>
+</body>
+</html>
