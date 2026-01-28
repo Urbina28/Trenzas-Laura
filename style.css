@@ -1,0 +1,33 @@
+:root { --rosa: #ff6b9d; --morado: #8e44ad; --fondo: #fcf4f7; --verde: #27ae60; --rojo: #e74c3c; --azul: #3498db; }
+body { font-family: 'Segoe UI', sans-serif; background: var(--fondo); margin: 0; padding-bottom: 30px; }
+
+#splash {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: white; display: flex; flex-direction: column;
+    justify-content: center; align-items: center; z-index: 9999; transition: 0.5s;
+}
+#splash img { width: 150px; border-radius: 50%; border: 4px solid var(--rosa); margin-bottom: 15px; }
+
+header { background: linear-gradient(135deg, var(--rosa), var(--morado)); color: white; padding: 15px; text-align: center; }
+nav { display: flex; justify-content: center; gap: 5px; margin-top: 10px; flex-wrap: wrap; }
+nav button { background: rgba(255,255,255,0.2); border: 1px solid white; color: white; padding: 8px 12px; border-radius: 20px; font-size: 13px; font-weight: bold; }
+
+.card { background: white; margin: 15px; padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+input, select { width: 100%; padding: 12px; margin-bottom: 12px; border: 1px solid #ddd; border-radius: 10px; font-size: 16px; box-sizing: border-box; }
+
+.checkbox-group { display: flex; justify-content: space-around; background: #fff0f5; padding: 12px; border-radius: 10px; margin-bottom: 12px; }
+.btn-save { background: var(--rosa); color: white; border: none; width: 100%; padding: 16px; border-radius: 12px; font-weight: bold; font-size: 16px; }
+
+#payment-preview { background: #f8f9fa; padding: 10px; border: 1px dashed var(--morado); border-radius: 10px; text-align: center; margin-bottom: 12px; }
+.hidden { display: none !important; }
+
+.tabs-corte { display: flex; gap: 10px; margin: 0 15px; }
+.btn-tab { flex: 1; padding: 12px; background: var(--morado); color: white; border: none; border-radius: 10px; font-weight: bold; }
+
+.stats-grid { display: grid; grid-template-columns: 1fr; gap: 10px; padding: 15px; }
+.stat-card { background: white; padding: 20px; border-radius: 15px; text-align: center; border-bottom: 5px solid var(--rosa); }
+.monto { font-size: 28px; font-weight: bold; margin: 5px 0; }
+
+.btn-finalizar { background: var(--verde); color: white; width: calc(100% - 30px); margin: 0 15px; padding: 18px; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; }
+
+#calendar { font-size: 12px; }
