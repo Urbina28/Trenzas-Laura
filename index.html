@@ -2,110 +2,112 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Urbina Cash Manager</title>
-    <style>
-        :root { --gold: #ffd700; --dark: #000; --neon: #00fbff; }
-        body {
-            background: var(--dark);
-            color: white;
-            font-family: 'Arial Black', sans-serif;
-            text-align: center;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            height: 100vh;
-        }
-        .header { font-size: 12px; color: var(--gold); letter-spacing: 2px; margin-bottom: 20px; }
-        
-        /* Botón Gigante */
-        .touch-area {
-            width: 250px;
-            height: 250px;
-            background: linear-gradient(145deg, #1a1a1a, #000);
-            border: 5px solid var(--gold);
-            border-radius: 50%;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
-            cursor: pointer;
-            transition: 0.1s;
-        }
-        .touch-area:active { transform: scale(0.95); box-shadow: 0 0 10px var(--gold); }
-        .touch-area span { font-size: 80px; }
-
-        /* Resultados */
-        .stats { margin-top: 40px; border-top: 1px solid #333; padding-top: 20px; }
-        .stat-box { font-size: 1.2rem; margin: 10px 0; }
-        .money { color: var(--neon); font-size: 2.5rem; text-shadow: 0 0 10px var(--neon); }
-        .count { color: var(--gold); font-size: 1.5rem; }
-
-        .btn-reset {
-            background: #ff0055;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            margin-top: 20px;
-            border-radius: 5px;
-            font-size: 12px;
-            opacity: 0.5;
-        }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Trenzas Laura Urbina</title>
+    <head>
+    <link rel="apple-touch-icon" href="Gemini_Generated_Image_h92t8ah92t8ah92t.png">
+    
+    <link rel="icon" type="image/png" href="Gemini_Generated_Image_h92t8ah92t8ah92t.png">
+    
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="manifest" href="manifest.json">
+</head>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <div class="header">GAEL URBINA - BARBER CONTROL</div>
-
-    <div class="touch-area" onclick="preguntarCorte()">
-        <span>💈</span>
+    <div id="splash">
+        <img src="Gemini_Generated_Image_h92t8ah92t8ah92t.png" alt="Logo Laura">
+        <h2>Trenzas Laura Urbina</h2>
     </div>
 
-    <div class="stats">
-        <div class="stat-box">CORTES HOY: <span id="contador" class="count">0</span></div>
-        <div class="stat-box">GANANCIA TOTAL:</div>
-        <div id="dinero" class="money">$0</div>
-    </div>
+    <header>
+        <h1>Laura Urbina</h1>
+        <nav>
+            <button onclick="showSection('form')">Nueva</button>
+            <button onclick="showSection('list')">Agenda</button>
+            <button onclick="showSection('calendario')">Calendario</button>
+            <button onclick="showSection('resumen')">Corte</button>
+        </nav>
+    </header>
 
-    <button class="btn-reset" onclick="resetear()">RESETEAR DÍA</button>
+    <main>
+        <section id="sec-form">
+            <div class="card">
+                <h2>Registrar Cita</h2>
+                <form id="appointment-form">
+                    <input type="text" id="clientName" placeholder="Nombre de la clienta" required>
+                    <select id="serviceType" onchange="updatePaymentInfo()">
+                        <option value="trenzas">Trenzas / Aplicación ($250)</option>
+                        <option value="retiro">Retiro ($175)</option>
+                        <option value="peinado">Peinado (Variable)</option>
+                    </select>
+                    
+                    <div id="manual-payment-div" class="hidden">
+                        <input type="number" id="manualPay" placeholder="Pago para Emma/Say $" oninput="updatePaymentInfo()">
+                    </div>
 
-    <script>
-        // Cargamos los datos guardados si existen
-        let cortes = parseInt(localStorage.getItem('cortes_gael')) || 0;
-        const PRECIO_CORTE = 120;
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" id="emma" checked onchange="updatePaymentInfo()"> Emma</label>
+                        <label><input type="checkbox" id="say" checked onchange="updatePaymentInfo()"> Say</label>
+                    </div>
 
-        // Función para mostrar los datos en pantalla
-        function actualizarPantalla() {
-            document.getElementById('contador').innerText = cortes;
-            document.getElementById('dinero').innerText = "$" + (cortes * PRECIO_CORTE);
+                    <input type="datetime-local" id="appointmentDate" required>
+                    <input type="number" id="totalCost" placeholder="Costo Total del Servicio $" required>
+                    
+                    <select id="status">
+                        <option value="pendiente">Pendiente (Apartado)</option>
+                        <option value="atendida">Atendida (Servicio Completo)</option>
+                    </select>
+
+                    <div id="payment-preview">
+                        <p>Pago Emma: <span id="pay-emma">$250</span></p>
+                        <p>Pago Say: <span id="pay-say">$250</span></p>
+                    </div>
+
+                    <button type="submit" class="btn-save">Guardar Cita</button>
+                </form>
+            </div>
+        </section>
+
+        <section id="sec-list" class="hidden">
+            <div class="card">
+                <h2>Agenda de Citas</h2>
+                <div id="appointments-container"></div>
+            </div>
+        </section>
+
+        <section id="sec-calendario" class="hidden">
+            <div class="card">
+                <div id="calendar"></div>
+            </div>
+        </section>
+
+        <section id="sec-resumen" class="hidden">
+            <div class="tabs-corte">
+                <button class="btn-tab" onclick="calculateCorte('dia')">Hoy</button>
+                <button class="btn-tab" onclick="calculateCorte('mes')">Mes</button>
+            </div>
             
-            // Guardamos en la memoria del celular para que no se borre al cerrar
-            localStorage.setItem('cortes_gael', cortes);
-        }
-
-        function preguntarCorte() {
-            // Confirmación de seguridad
-            let confirmar = confirm("¿Acabas de terminar un corte de $120?");
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3 id="corte-titulo">Ventas Realizadas</h3>
+                    <p id="total-ventas" class="monto">$0</p>
+                </div>
+                <div class="stat-card" style="border-bottom-color: orange;">
+                    <h3>Por Cobrar (Pendientes)</h3>
+                    <p id="total-pendiente" class="monto" style="color: orange;">$0</p>
+                </div>
+                <div class="stat-card"><h3>Total Emma</h3><p id="total-emma" class="monto">$0</p></div>
+                <div class="stat-card"><h3>Total Say</h3><p id="total-say" class="monto">$0</p></div>
+            </div>
             
-            if (confirmar) {
-                cortes++;
-                actualizarPantalla();
-                // Vibración pequeña
-                if (navigator.vibrate) navigator.vibrate(100);
-            }
-        }
+            <button class="btn-finalizar" onclick="exportarReporte()">Copiar Reporte para WhatsApp</button>
+        </section>
+    </main>
 
-        function resetear() {
-            if (confirm("¿Seguro que quieres borrar las ganancias de hoy?")) {
-                cortes = 0;
-                actualizarPantalla();
-            }
-        }
-
-        // Mostrar datos al abrir la app
-        actualizarPantalla();
-    </script>
+    <script type="module" src="app.js"></script>
 </body>
 </html>
