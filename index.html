@@ -3,24 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Trenzas Laura Urbina</title>
-    <head>
+    <title>Laura Urbina - Trenzas</title>
     <link rel="apple-touch-icon" href="Gemini_Generated_Image_h92t8ah92t8ah92t.png">
-    
     <link rel="icon" type="image/png" href="Gemini_Generated_Image_h92t8ah92t8ah92t.png">
-    
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="manifest" href="manifest.json">
-</head>
+    <meta name="apple-mobile-web-app-capable" content="yes">
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <div id="splash">
-        <img src="Gemini_Generated_Image_h92t8ah92t8ah92t.png" alt="Logo Laura">
-        <h2>Trenzas Laura Urbina</h2>
+        <img src="Gemini_Generated_Image_h92t8ah92t8ah92t.png" alt="Logo">
+        <h2>Laura Urbina</h2>
     </div>
 
     <header>
@@ -55,16 +50,22 @@
                     </div>
 
                     <input type="datetime-local" id="appointmentDate" required>
-                    <input type="number" id="totalCost" placeholder="Costo Total del Servicio $" required>
                     
+                    <input type="number" id="totalCost" placeholder="Costo Total $" required oninput="calcularRestante()">
+                    <input type="number" id="anticipo" placeholder="Anticipo (Depósito) $" oninput="calcularRestante()">
+                    
+                    <div id="restante-preview" style="background: #eef2f7; padding: 10px; border-radius: 10px; text-align: center; margin-bottom: 12px; border: 1px solid #3498db;">
+                        <p style="margin:0; font-weight:bold; color: #2980b9;">Falta por pagar: <span id="monto-restante">$0</span></p>
+                    </div>
+
                     <select id="status">
                         <option value="pendiente">Pendiente (Apartado)</option>
-                        <option value="atendida">Atendida (Servicio Completo)</option>
+                        <option value="atendida">Atendida (Cerrada)</option>
                     </select>
 
                     <div id="payment-preview">
-                        <p>Pago Emma: <span id="pay-emma">$250</span></p>
-                        <p>Pago Say: <span id="pay-say">$250</span></p>
+                        <p>A Emma: <span id="pay-emma">$250</span></p>
+                        <p>A Say: <span id="pay-say">$250</span></p>
                     </div>
 
                     <button type="submit" class="btn-save">Guardar Cita</button>
@@ -79,32 +80,20 @@
             </div>
         </section>
 
-        <section id="sec-calendario" class="hidden">
-            <div class="card">
-                <div id="calendar"></div>
-            </div>
-        </section>
+        <section id="sec-calendario" class="hidden"><div class="card"><div id="calendar"></div></div></section>
 
         <section id="sec-resumen" class="hidden">
             <div class="tabs-corte">
                 <button class="btn-tab" onclick="calculateCorte('dia')">Hoy</button>
                 <button class="btn-tab" onclick="calculateCorte('mes')">Mes</button>
             </div>
-            
             <div class="stats-grid">
-                <div class="stat-card">
-                    <h3 id="corte-titulo">Ventas Realizadas</h3>
-                    <p id="total-ventas" class="monto">$0</p>
-                </div>
-                <div class="stat-card" style="border-bottom-color: orange;">
-                    <h3>Por Cobrar (Pendientes)</h3>
-                    <p id="total-pendiente" class="monto" style="color: orange;">$0</p>
-                </div>
-                <div class="stat-card"><h3>Total Emma</h3><p id="total-emma" class="monto">$0</p></div>
-                <div class="stat-card"><h3>Total Say</h3><p id="total-say" class="monto">$0</p></div>
+                <div class="stat-card"><h3 id="corte-titulo">Corte</h3><p id="total-ventas" class="monto">$0</p></div>
+                <div class="stat-card" style="border-bottom-color: orange;"><h3>Por Cobrar</h3><p id="total-pendiente" class="monto" style="color: orange;">$0</p></div>
+                <div class="stat-card"><h3>Emma</h3><p id="total-emma" class="monto">$0</p></div>
+                <div class="stat-card"><h3>Say</h3><p id="total-say" class="monto">$0</p></div>
             </div>
-            
-            <button class="btn-finalizar" onclick="exportarReporte()">Copiar Reporte para WhatsApp</button>
+            <button class="btn-finalizar" onclick="exportarReporte()">Copiar Reporte WhatsApp</button>
         </section>
     </main>
 
